@@ -1,0 +1,61 @@
+{% extends "layout.html" %} {% block content %}
+<script src="{{url_for('static', filename='js/external/Chart.bundle.min.js')}}"></script>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="{{ url_for('main') }}">Flask Charts.js drilldown example project</a>
+</nav>
+
+<div class="alert alert-info">
+    Click a chart point to drilldown to the underlying dataset
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <canvas id="lineChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    var cv = document.getElementById('lineChart')
+    var ctx = cv.getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ["2020-01-02", "2020-01-03", "2020-01-11"],
+            datasets: [{
+                label: "line items",
+                data: [11, 10, 14]
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'line chart with drilldowns'
+            },
+            legend: {
+                onHover: function(e) {
+                    e.target.style.cursor = 'pointer';
+                }
+            },
+            hover: {
+                onHover: function(e) {
+                    var point = this.getElementAtEvent(e);
+                    if (point.length) e.target.style.cursor = 'pointer';
+                    else e.target.style.cursor = 'default';
+                }
+            }
+        },
+    });
+    cv.onclick = function(evt) {
+        var activePoints = chart.getElementsAtEventForMode(evt, 'point', chart.options);
+        var firstPoint = activePoints[0];
+        var label = chart.data.labels[firstPoint._index];
+        //var value = chart.data.datasets[firstPoint._datasetIndex].data[firstPoint._index];
+        var url = "http://127.0.0.1:80/" + label;
+        console.log(url);
+        // window.location = url
+    };
+</script>
+
+{% endblock %}
