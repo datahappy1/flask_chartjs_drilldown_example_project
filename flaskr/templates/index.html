@@ -1,7 +1,10 @@
 {% extends "layout.html" %} {% block content %}
 <script src="{{url_for('static', filename='js/external/Chart.bundle.min.js')}}"></script>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="{{ url_for('main') }}">Flask Charts.js drilldown example project</a>
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active"><a href="{{ url_for('main') }}">Main screen</a></li>
+    </ol>
 </nav>
 
 <div class="alert alert-info">
@@ -22,10 +25,10 @@
     var chart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ["2020-01-02", "2020-01-03", "2020-01-11"],
+            labels: {{ template_labels | tojson }},
             datasets: [{
-                label: "line items",
-                data: [11, 10, 14]
+                label: "Covid 19 recovered",
+                data: {{ template_values }}
             }]
         },
         options: {
@@ -50,11 +53,20 @@
     cv.onclick = function(evt) {
         var activePoints = chart.getElementsAtEventForMode(evt, 'point', chart.options);
         var firstPoint = activePoints[0];
-        var label = chart.data.labels[firstPoint._index];
-        //var value = chart.data.datasets[firstPoint._datasetIndex].data[firstPoint._index];
-        var url = "http://127.0.0.1:80/" + label;
-        console.log(url);
-        // window.location = url
+
+        // if activePoints array len > 0, build up the link, and go to the drilldown page
+        // this is to cover the case when the legend is clicked
+
+        if (activePoints.length > 0) {
+            var label = chart.data.labels[firstPoint._index];
+            // in case you need to get also the value
+            // var value = chart.data.datasets[firstPoint._datasetIndex].data[firstPoint._index];
+
+            var url = "/details/" + encodeURIComponent(label);
+
+            console.log(url);
+            window.location = url
+        }
     };
 </script>
 

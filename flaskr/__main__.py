@@ -2,6 +2,8 @@
 __main__.py
 """
 import os
+import csv
+import itertools
 from flask import Flask, render_template, send_from_directory
 from waitress import serve
 
@@ -12,7 +14,10 @@ def create_app():
 
 APP = create_app()
 
-DATA_SET = {"2020-01-02": 11, "2020-01-03": 10, "2020-01-11": 14}
+DATA_SET = []
+reader = csv.DictReader(open('data/covid_19_data.csv', 'r', newline='\n'))
+for line in reader:
+    DATA_SET.append(dict(line))
 
 
 @APP.route('/favicon.ico')
@@ -31,12 +36,21 @@ def main():
     the main route rendering index.html
     :return:
     """
-    return render_template('index.html', template_data_set=DATA_SET)
+    output = []
+    for key, group in itertools.groupby(DATA_SET, key=lambda x: x['ObservationDate']):
+        output.append((key, sum([float(r.get('Recovered')) for r in list(group)])))
+
+    labels = [x[0] for x in output]
+    values = [x[1] for x in output]
+
+    return render_template('index.html', template_labels=labels, template_values=values)
 
 
-@APP.route('/<string:item>', methods=['GET'])
+@APP.route('/details/<string:item>', methods=['GET'])
 def item(item):
-    filtered_data_set = {k: v for k, v in DATA_SET.items() if k==item}
+    print(item)
+    filtered_data_set = [x for x in DATA_SET if x.get('ObservationDate') == item]
+
     return render_template('details.html', template_data_set=filtered_data_set)
 
 

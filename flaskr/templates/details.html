@@ -1,21 +1,39 @@
 {% extends "layout.html" %} {% block content %}
 
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('main') }}">Main screen</a></li>
+        <li class="breadcrumb-item active">{{ request.path[1:] }}</li>
+        <!-- request.path[1:] , list slicing to remove leading slash in the request path -->
+    </ol>
+</nav>
+
 <table class="table table-sm table-light">
-  <thead>
+  <thead class="table-light">
     <tr class="table-light">
-      <th scope="col">#</th>
-      <th scope="col">First</th>
-      <th scope="col">Last</th>
-      <th scope="col">Handle</th>
+      <th scope="col">SNo</th>
+      <th scope="col">ObservationDate</th>
+      <th scope="col">Province/State</th>
+      <th scope="col">Country/Region</th>
+      <th scope="col">Last Update</th>
+      <th scope="col">Confirmed</th>
+      <th scope="col">Deaths</th>
+      <th scope="col">Recovered</th>
     </tr>
   </thead>
   <tbody>
+  {% for item in template_data_set %}
     <tr class="table-light">
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
+      <td>{{ item.get('SNo') }}</td>
+      <td>{{ item.get('ObservationDate') }}</td>
+      <td>{{ item.get('Province/State') }}</td>
+      <td>{{ item.get('Country/Region') }}</td>
+      <td>{{ item.get('Last Update') }}</td>
+      <td>{{ item.get('Confirmed') }}</td>
+      <td>{{ item.get('Deaths') }}</td>
+      <td>{{ item.get('Recovered') }}</td>
     </tr>
+  {% endfor %}
   </tbody>
 </table>
 
