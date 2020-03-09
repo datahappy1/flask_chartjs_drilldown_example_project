@@ -1,5 +1,8 @@
 # Flask, Chart.js drilldown example project
 Flask and Chart.js example project allowing the web application user to drilldown to the detailed data through the main chart data point.
+In the current version of Chart.js library (March 2020), this functionality is not available. The chart datapoint drilldown feature is covered
+<a href="https://github.com/datahappy1/flask_chartjs_drilldown_example_project/blob/master/flaskr/templates/index.html#L71">here</a>.
+
 This example repository uses the Kaggle "covid19" dataset. 
 
 *Currently designed to run on Windows, but if you replace Waitress WSGI with Gunicorn for instance, can
