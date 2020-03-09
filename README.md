@@ -8,7 +8,7 @@ run also on *nix based OS
 ## Screenshots from the web app
 ![alt text][screens]
 
-[screens]: https://github.com/datahappy1/flask_sse_example_project/blob/master/flaskr/docs/screens.gif "screens"
+[screens]: https://github.com/datahappy1/flask_chartjs_drilldown_example_project/blob/master/flaskr/docs/screens.gif "screens"
 
 
 ## How to get started

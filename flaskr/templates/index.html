@@ -27,9 +27,27 @@
         data: {
             labels: {{ template_labels | tojson }},
             datasets: [{
+                label: "Covid 19 confirmed",
+                data: {{ template_values_confirmed }},
+                backgroundColor: "#3399ff",
+                borderColor: "#3399ff",
+                fill: false,
+            },
+            {
+                label: "Covid 19 deaths",
+                data: {{ template_values_deaths }},
+                backgroundColor: "#ff0000",
+                borderColor: "#ff0000",
+                fill: false,
+            },
+            {
                 label: "Covid 19 recovered",
-                data: {{ template_values }}
-            }]
+                data: {{ template_values_recovered }},
+                backgroundColor: "#33cc33",
+                borderColor: "#33cc33",
+                fill: false,
+            },
+            ]
         },
         options: {
             title: {
@@ -62,9 +80,7 @@
             // in case you need to get also the value
             // var value = chart.data.datasets[firstPoint._datasetIndex].data[firstPoint._index];
 
-            var url = "/details/" + encodeURIComponent(label);
-
-            console.log(url);
+            var url = "/" + label;
             window.location = url
         }
     };

@@ -4,6 +4,7 @@ __main__.py
 import os
 import csv
 import itertools
+from datetime import datetime
 from flask import Flask, render_template, send_from_directory
 from waitress import serve
 
@@ -17,7 +18,9 @@ APP = create_app()
 DATA_SET = []
 reader = csv.DictReader(open('data/covid_19_data.csv', 'r', newline='\n'))
 for line in reader:
-    DATA_SET.append(dict(line))
+    _line = {k:v for k,v in line.items()}
+    _line['ObservationDate'] = datetime.strptime(line['ObservationDate'], '%m/%d/%Y').strftime('%m-%d-%Y')
+    DATA_SET.append(_line)
 
 
 @APP.route('/favicon.ico')
@@ -38,17 +41,31 @@ def main():
     """
     output = []
     for key, group in itertools.groupby(DATA_SET, key=lambda x: x['ObservationDate']):
-        output.append((key, sum([float(r.get('Recovered')) for r in list(group)])))
+        _group = list(group)
+        output.append((key,
+                       sum([float(r.get('Confirmed')) for r in _group]),
+                       sum([float(r.get('Deaths')) for r in _group]),
+                       sum([float(r.get('Recovered')) for r in _group])
+                       ))
 
     labels = [x[0] for x in output]
-    values = [x[1] for x in output]
+    values_confirmed = [x[1] for x in output]
+    values_deaths = [x[2] for x in output]
+    values_recovered = [x[3] for x in output]
 
-    return render_template('index.html', template_labels=labels, template_values=values)
+    return render_template('index.html', template_labels=labels,
+                           template_values_confirmed=values_confirmed,
+                           template_values_deaths=values_deaths,
+                           template_values_recovered=values_recovered)
 
 
-@APP.route('/details/<string:item>', methods=['GET'])
+@APP.route('/<string:item>', methods=['GET'])
 def item(item):
-    print(item)
+    """
+    the route for each "drilldown" item
+    :param item:
+    :return:
+    """
     filtered_data_set = [x for x in DATA_SET if x.get('ObservationDate') == item]
 
     return render_template('details.html', template_data_set=filtered_data_set)
