@@ -16,7 +16,7 @@ APP = create_app()
 
 # load the data sets from the covid_19_data.csv
 dlo = data_loader.DataLoader()
-DATA_SET_RAW = data_loader.DataLoader.prepare_data_set_raw(dlo)
+DATA_SET_FULL = data_loader.DataLoader.prepare_data_set_full(dlo)
 DATA_SET_GROUPED = data_loader.DataLoader.prepare_data_set_grouped(dlo)
 
 
@@ -54,7 +54,7 @@ def item(item):
     :param item:
     :return:
     """
-    filtered_data_set = [x for x in DATA_SET_RAW if x.get('ObservationDate') == item]
+    filtered_data_set = [x for x in DATA_SET_FULL if x.get('ObservationDate') == item]
 
     return render_template('details.html', template_data_set=filtered_data_set)
 
