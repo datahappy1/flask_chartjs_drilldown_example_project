@@ -6,7 +6,7 @@ from datetime import datetime
 
 class DataLoader:
     def __init__(self):
-        self.file_name = os.getcwd() + "\\data\\covid_19_data.csv"
+        self.file_name = os.path.join(os.getcwd(), 'data', 'covid_19_data.csv')
         self.data_set_raw = []
         self.data_set_grouped = []
 
