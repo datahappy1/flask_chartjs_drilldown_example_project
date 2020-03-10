@@ -2,11 +2,10 @@
 __main__.py
 """
 import os
-import csv
-import itertools
-from datetime import datetime
 from flask import Flask, render_template, send_from_directory
 from waitress import serve
+from flaskr.data import data_loader
+
 
 def create_app():
     APP = Flask(__name__)
@@ -15,12 +14,10 @@ def create_app():
 
 APP = create_app()
 
-DATA_SET = []
-reader = csv.DictReader(open('data/covid_19_data.csv', 'r', newline='\n'))
-for line in reader:
-    _line = {k:v for k,v in line.items()}
-    _line['ObservationDate'] = datetime.strptime(line['ObservationDate'], '%m/%d/%Y').strftime('%m-%d-%Y')
-    DATA_SET.append(_line)
+# load the data sets from the covid_19_data.csv
+dlo = data_loader.DataLoader()
+DATA_SET_RAW = data_loader.DataLoader.prepare_data_set_raw(dlo)
+DATA_SET_GROUPED = data_loader.DataLoader.prepare_data_set_grouped(dlo)
 
 
 @APP.route('/favicon.ico')
@@ -39,19 +36,10 @@ def main():
     the main route rendering index.html
     :return:
     """
-    output = []
-    for key, group in itertools.groupby(DATA_SET, key=lambda x: x['ObservationDate']):
-        _group = list(group)
-        output.append((key,
-                       sum([float(r.get('Confirmed')) for r in _group]),
-                       sum([float(r.get('Deaths')) for r in _group]),
-                       sum([float(r.get('Recovered')) for r in _group])
-                       ))
-
-    labels = [x[0] for x in output]
-    values_confirmed = [x[1] for x in output]
-    values_deaths = [x[2] for x in output]
-    values_recovered = [x[3] for x in output]
+    labels = [x[0] for x in DATA_SET_GROUPED]
+    values_confirmed = [x[1] for x in DATA_SET_GROUPED]
+    values_deaths = [x[2] for x in DATA_SET_GROUPED]
+    values_recovered = [x[3] for x in DATA_SET_GROUPED]
 
     return render_template('index.html', template_labels=labels,
                            template_values_confirmed=values_confirmed,
@@ -66,7 +54,7 @@ def item(item):
     :param item:
     :return:
     """
-    filtered_data_set = [x for x in DATA_SET if x.get('ObservationDate') == item]
+    filtered_data_set = [x for x in DATA_SET_RAW if x.get('ObservationDate') == item]
 
     return render_template('details.html', template_data_set=filtered_data_set)
 
