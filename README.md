@@ -19,7 +19,7 @@ run also on *nix based OS
 2) Create and activate yourself a Python virtual environment
 3) run `pip3 install -r requirements.txt`
 4) set your Windows Python working directory to `C:\<<<folder where you cloned this repo to>>>\flaskr`
-5) run `python3 C:\<<<folder where you cloned this repo to>>>\flaskr\__main__.py`
+5) run `python3 C:\<<<folder where you cloned this repo to>>>\flaskr\app.py`
 
 ### Useful links:
 - https://www.chartjs.org/
