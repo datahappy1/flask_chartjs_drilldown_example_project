@@ -8,16 +8,16 @@ from flaskr.data import data_loader
 
 
 def create_app():
-    APP = Flask(__name__)
-    return APP
+    _APP = Flask(__name__)
+    return _APP
 
 
 APP = create_app()
 
 # load the data sets from the covid_19_data.csv
-dlo = data_loader.DataLoader()
-DATA_SET_FULL = data_loader.DataLoader.prepare_data_set_full(dlo)
-DATA_SET_GROUPED = data_loader.DataLoader.prepare_data_set_grouped(dlo)
+data_loader_obj = data_loader.DataLoader()
+DATA_SET_FULL = data_loader_obj.prepare_data_set_full()
+DATA_SET_GROUPED = data_loader_obj.prepare_data_set_grouped()
 
 
 @APP.route('/favicon.ico')
@@ -48,9 +48,9 @@ def main():
 
 
 @APP.route('/<string:item>', methods=['GET'])
-def item(item):
+def get_item_details(item):
     """
-    the route for each "drilldown" item
+    the route for each "drilldown" item details
     :param item:
     :return:
     """
